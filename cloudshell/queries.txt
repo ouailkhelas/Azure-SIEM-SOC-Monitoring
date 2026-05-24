@@ -1,0 +1,116 @@
+# KQL (Kusto Query Language) Queries for Microsoft Sentinel
+# Run these queries in Log Analytics Workspace to analyze security events
+
+## Query 1: All Events from All VMs (Basic)
+SecurityEvent
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, EventID, Activity, Account
+| order by TimeGenerated desc
+| limit 100
+
+## Query 2: Failed Login Attempts (Brute Force Detection)
+SecurityEvent
+| where EventID == 4625
+| where TimeGenerated > ago(24h)
+| summarize FailedLoginCount = count() by Computer, Account
+| where FailedLoginCount > 5
+| sort by FailedLoginCount desc
+
+## Query 3: Successful Logins
+SecurityEvent
+| where EventID == 4624
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, TargetUserName, LogonType
+| order by TimeGenerated desc
+
+## Query 4: Administrative Logons
+SecurityEvent
+| where EventID == 4648
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, TargetAccount
+| order by TimeGenerated desc
+
+## Query 5: Account Lockouts
+SecurityEvent
+| where EventID == 4740
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, TargetAccount, Account
+| order by TimeGenerated desc
+
+## Query 6: Failed RDP Attempts
+SecurityEvent
+| where EventID == 4625
+| where LogonType == 10
+| where TimeGenerated > ago(24h)
+| summarize RDPFailures = count() by Computer, IpAddress = SourceIp
+| where RDPFailures > 3
+
+## Query 7: Privilege Escalation Events
+SecurityEvent
+| where EventID in (4673, 4674, 4688)
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, Activity
+| order by TimeGenerated desc
+
+## Query 8: Process Creation Events
+SecurityEvent
+| where EventID == 4688
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, CommandLine = ProcessName
+| order by TimeGenerated desc
+
+## Query 9: Failed SSH Attempts (Linux)
+Syslog
+| where ProcessName contains "sshd"
+| where SyslogMessage contains "Failed"
+| where TimeGenerated > ago(24h)
+| summarize FailureCount = count() by Computer, SourceIP
+| where FailureCount > 5
+
+## Query 10: Linux Sudo Usage
+Syslog
+| where ProcessName == "sudo"
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, SyslogMessage
+| order by TimeGenerated desc
+
+## Query 11: Network Intrusion Detection Pattern
+SecurityEvent
+| where EventID == 5156
+| where TimeGenerated > ago(24h)
+| summarize ConnectionAttempts = count() by DestinationIp, DestinationPort
+| where ConnectionAttempts > 100
+| order by ConnectionAttempts desc
+
+## Query 12: Service Installation (Potentially Malicious)
+SecurityEvent
+| where EventID == 7045
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, ServiceFileName
+| order by TimeGenerated desc
+
+## Query 13: System Time Changes
+SecurityEvent
+| where EventID == 4616
+| where TimeGenerated > ago(24h)
+| project TimeGenerated, Computer, Account, Activity
+
+## Query 14: Multiple Logons From Different IPs Same Account
+SecurityEvent
+| where EventID == 4624
+| where LogonType == 3
+| where TimeGenerated > ago(6h)
+| summarize
+    LoginCount = count(),
+    UniqueIPs = dcount(SourceIp),
+    Computers = dcount(Computer)
+    by Account
+| where UniqueIPs > 5
+
+## Query 15: Failed Logon Spike Detection
+SecurityEvent
+| where EventID == 4625
+| where TimeGenerated > ago(1h)
+| extend TimeSlot = bin(TimeGenerated, 10m)
+| summarize FailureCount = count() by TimeSlot, Computer
+| where FailureCount > 20
