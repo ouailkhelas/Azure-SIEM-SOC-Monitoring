@@ -98,3 +98,20 @@ Test attack detection by:
 - Run KQL queries (see `cloudshell/queries.txt`)
 - Create custom workbooks
 - Understand attack patterns
+
+- ## 🚀Troubleshooting
+
+**VMs not sending logs:**
+- Verify agents are installed: `az vm extension list`
+- Check agent health in Log Analytics
+- Ensure NSG allows outbound 443 to Azure services
+
+**No data in Sentinel:**
+- Wait 10+ minutes after agent installation
+- Check Log Analytics ingestion status
+- Verify agent configuration with correct workspace ID
+
+**False positives in alerts:**
+- Adjust threshold values gradually
+- Add filters for known good IPs
+- Use custom analytics rules instead of default ones
