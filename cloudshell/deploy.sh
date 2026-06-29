@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# SOC Lab Deployment Script for Azure Cloud Shell
-# This script deploys the entire SOC infrastructure
-
 set -e
 
 echo "=========================================="
@@ -11,7 +8,6 @@ echo "Deployment Script"
 echo "=========================================="
 echo ""
 
-# Check if we're in the right directory
 if [ ! -f "terraform/main.tf" ]; then
     echo "Error: terraform/main.tf not found!"
     echo "Please run this script from the project root directory"
@@ -36,12 +32,11 @@ echo "Infrastructure Deployed Successfully!"
 echo "=========================================="
 echo ""
 
-# Get outputs
 LINUX_IP=$(terraform output -raw linux_vm_public_ip)
 WINDOWS_IP=$(terraform output -raw windows_vm_public_ip)
 LAW_NAME=$(terraform output -raw log_analytics_workspace_name)
 
-echo "📊 Deployment Summary:"
+echo " Deployment Summary:"
 echo "Linux VM Public IP: $LINUX_IP"
 echo "Windows VM Public IP: $WINDOWS_IP"
 echo "Log Analytics Workspace: $LAW_NAME"
@@ -53,9 +48,9 @@ echo "3. Enable Microsoft Sentinel"
 echo "4. Create Analytics Rules (see portal/sentinelconfig.md)"
 echo "5. Run KQL queries (see queries.txt)"
 echo ""
-echo "🔒 SSH to Linux VM:"
+echo " SSH to Linux VM:"
 echo "   ssh azureuser@$LINUX_IP"
 echo ""
-echo "🪟 RDP to Windows VM:"
+echo " RDP to Windows VM:"
 echo "   Remote Desktop Connection to $WINDOWS_IP"
 echo ""
