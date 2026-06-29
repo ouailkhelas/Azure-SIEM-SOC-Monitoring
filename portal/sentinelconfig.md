@@ -8,8 +8,6 @@
 4. Select the Log Analytics Workspace created by Terraform
 5. Click "Add" to enable Sentinel
 
-**Wait 10-15 minutes for Sentinel to fully initialize**
-
 ---
 
 ## Step 2: Connect Data Sources
@@ -208,38 +206,3 @@ SecurityEvent
 | where SourceComputers > 3 and LoginAttempts > 10
 ```
 
----
-
-## Best Practices
-
-✅ **DO:**
-- Adjust rule thresholds based on your environment
-- Test alerts with sample attacks
-- Create automation rules for notifications
-- Regularly review incidents and false positives
-- Correlate events across multiple logs
-
-❌ **DON'T:**
-- Leave passwords in clear text (use Azure Key Vault)
-- Enable all rules at once (causes alert fatigue)
-- Ignore failed connection attempts from agents
-- Forget to verify agents are running
-
----
-
-## Troubleshooting
-
-**VMs not sending logs:**
-- Verify agents are installed: `az vm extension list`
-- Check agent health in Log Analytics
-- Ensure NSG allows outbound 443 to Azure services
-
-**No data in Sentinel:**
-- Wait 10+ minutes after agent installation
-- Check Log Analytics ingestion status
-- Verify agent configuration with correct workspace ID
-
-**False positives in alerts:**
-- Adjust threshold values gradually
-- Add filters for known good IPs
-- Use custom analytics rules instead of default ones
