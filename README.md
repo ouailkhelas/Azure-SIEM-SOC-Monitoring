@@ -1,16 +1,16 @@
-# Azure SOC & Intrusion Detection Lab
+# Azure SIEM-SOC & Intrusion Detection Lab
 
 A comprehensive hands-on learning project for understanding Azure security monitoring, threat detection, and incident response using Microsoft Sentinel.
 
 ## 🚀Architecture Overview
 
 ```
-┌─────────────────┐      ┌──────────────────┐      ┌─────────────────┐
-│   Linux VM      │      │   Windows VM     │      │   Other Sources │
-│  (Ubuntu)       │      │   (Server 2019)  │      │                 │
-└────────┬────────┘      └────────┬─────────┘      └────────┬────────┘
-         │                        │                         │
-         └────────────┬───────────┴─────────────┬──────────┘
+┌─────────────────┐                              ┌─────────────────┐
+│   Linux VM      │                              │   Windows VM    │
+│  (Ubuntu)       │                              │  (server 2019)  │
+└────────┬────────┘                              └────────┬────────┘
+         │                                                │
+         └────────────┬───────────┴─────────────┬─────────┘
                       │ Log Analytics Agent
                       ▼
          ┌────────────────────────┐
