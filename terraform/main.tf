@@ -1,11 +1,9 @@
-# Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
 
-# Virtual Network
 resource "azurerm_virtual_network" "vnet" {
   name                = var.vnet_name
   address_space       = [var.vnet_address_space]
@@ -14,7 +12,6 @@ resource "azurerm_virtual_network" "vnet" {
   tags                = var.tags
 }
 
-# Subnet
 resource "azurerm_subnet" "subnet" {
   name                 = var.subnet_name
   resource_group_name  = azurerm_resource_group.rg.name
@@ -22,7 +19,6 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [var.subnet_address_prefix]
 }
 
-# Network Security Group
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.environment}-nsg"
   location            = azurerm_resource_group.rg.location
@@ -55,7 +51,6 @@ resource "azurerm_network_security_group" "nsg" {
   tags = var.tags
 }
 
-# Network Interface for Linux VM
 resource "azurerm_network_interface" "linux_nic" {
   name                = "linux-nic"
   location            = azurerm_resource_group.rg.location
@@ -71,7 +66,6 @@ resource "azurerm_network_interface" "linux_nic" {
   tags = var.tags
 }
 
-# Network Interface for Windows VM
 resource "azurerm_network_interface" "windows_nic" {
   name                = "windows-nic"
   location            = azurerm_resource_group.rg.location
@@ -87,7 +81,6 @@ resource "azurerm_network_interface" "windows_nic" {
   tags = var.tags
 }
 
-# Public IP for Linux VM
 resource "azurerm_public_ip" "linux_pip" {
   name                = "linux-pip"
   location            = azurerm_resource_group.rg.location
@@ -96,7 +89,6 @@ resource "azurerm_public_ip" "linux_pip" {
   tags                = var.tags
 }
 
-# Public IP for Windows VM
 resource "azurerm_public_ip" "windows_pip" {
   name                = "windows-pip"
   location            = azurerm_resource_group.rg.location
@@ -105,13 +97,11 @@ resource "azurerm_public_ip" "windows_pip" {
   tags                = var.tags
 }
 
-# Associate NSG with Subnet
 resource "azurerm_subnet_network_security_group_association" "nsg_assoc" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# Linux Virtual Machine
 resource "azurerm_linux_virtual_machine" "linux_vm" {
   name                = var.linux_vm_name
   location            = azurerm_resource_group.rg.location
@@ -142,7 +132,6 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   tags = var.tags
 }
 
-# Windows Virtual Machine
 resource "azurerm_windows_virtual_machine" "windows_vm" {
   name                = var.windows_vm_name
   location            = azurerm_resource_group.rg.location
@@ -171,7 +160,6 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   tags = var.tags
 }
 
-# Log Analytics Workspace
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.law_name
   location            = azurerm_resource_group.rg.location
@@ -182,7 +170,6 @@ resource "azurerm_log_analytics_workspace" "law" {
   tags = var.tags
 }
 
-# Install Log Analytics Agent on Linux VM
 resource "azurerm_virtual_machine_extension" "linux_agent" {
   name                       = "LinuxLoggingAgent"
   virtual_machine_id         = azurerm_linux_virtual_machine.linux_vm.id
@@ -200,7 +187,6 @@ resource "azurerm_virtual_machine_extension" "linux_agent" {
   })
 }
 
-# Install Log Analytics Agent on Windows VM
 resource "azurerm_virtual_machine_extension" "windows_agent" {
   name                       = "WindowsLoggingAgent"
   virtual_machine_id         = azurerm_windows_virtual_machine.windows_vm.id
@@ -218,7 +204,6 @@ resource "azurerm_virtual_machine_extension" "windows_agent" {
   })
 }
 
-# Microsoft Sentinel
 resource "azurerm_sentinel_log_analytics_workspace_onboarding" "sentinel" {
   workspace_id = azurerm_log_analytics_workspace.law.id
 }
