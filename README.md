@@ -110,8 +110,3 @@ Test attack detection by:
 - Wait 10+ minutes after agent installation
 - Check Log Analytics ingestion status
 - Verify agent configuration with correct workspace ID
-
-**False positives in alerts:**
-- Adjust threshold values gradually
-- Add filters for known good IPs
-- Use custom analytics rules instead of default ones
