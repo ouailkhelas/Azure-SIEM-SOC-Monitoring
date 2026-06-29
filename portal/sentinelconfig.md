@@ -154,24 +154,6 @@ Syslog
 
 ---
 
-## Step 7: Monitor Log Ingestion
-
-### Check Data is Coming In
-1. Go to Log Analytics Workspace
-2. Click "Logs"
-3. Run query:
-```
-SecurityEvent
-| summarize count() by Computer
-```
-4. Should see your VMs with event counts
-
-### Verify Agent Health
-1. Go to Log Analytics Workspace → Agents
-2. Check both VMs show as "Connected"
-
----
-
 ## Important KQL Queries for Sentinel
 
 ### Hunt for Suspicious Activities
